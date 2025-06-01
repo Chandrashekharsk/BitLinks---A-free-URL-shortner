@@ -6,6 +6,7 @@ const Shorten = () => {
   const [url, setUrl] = React.useState("");
   const [shortUrl, setShortUrl] = React.useState("");
   const [generated, setGenerated] = React.useState("");
+  
 
   const generate = () => {
     const myHeaders = new Headers();
@@ -22,6 +23,8 @@ const Shorten = () => {
       body: raw,
       redirect: "follow",
     };
+
+    
 
     fetch("/api/generate", requestOptions)
       .then((response) => response.json())
@@ -56,7 +59,7 @@ const Shorten = () => {
         <input
           type="text "
           className="px-4 py-2 focus:outline-purple-600 bg-white text-black"
-          placeholder="Enter your custom text"
+          placeholder="Enter your custom short link"
           onChange={(e) => setShortUrl(e.target.value)}
           disabled={generated}
           value={shortUrl}
