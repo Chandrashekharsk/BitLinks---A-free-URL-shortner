@@ -9,11 +9,12 @@ export async function POST(req){
 
   // Check if the short URL already exists
   const existingUrl = await collection.findOne({ shortUrl:body.shortUrl });
+  console.log("ExistingUrl:", existingUrl)
   if (existingUrl) {
     return Response.json({
       success: false,
       error: true,
-      message: "Short URL already exists. Please choose a different one."
+      message: "This Custom Text is already taken. Please try another one.",
     });
   }
 

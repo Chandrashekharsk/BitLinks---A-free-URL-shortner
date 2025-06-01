@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import toast from "react-hot-toast";
 
 const Shorten = () => {
   const [url, setUrl] = React.useState("");
@@ -25,9 +26,15 @@ const Shorten = () => {
     fetch("/api/generate", requestOptions)
       .then((response) => response.json())
       .then((result) => {
+        if(result.error) {
+          toast.error(result.message);
+          return;
+        }
         setUrl("");
         setShortUrl("");
+        toast.success(result.message);
         setGenerated(`${process.env.NEXT_PUBLIC_HOST}/${shortUrl}`);
+
       })
       .catch((error) => console.error(error));
     
@@ -49,7 +56,7 @@ const Shorten = () => {
         <input
           type="text "
           className="px-4 py-2 focus:outline-purple-600 bg-white text-black"
-          placeholder="Enter your preferred short URL text"
+          placeholder="Enter your custom text"
           onChange={(e) => setShortUrl(e.target.value)}
           disabled={generated}
           value={shortUrl}
