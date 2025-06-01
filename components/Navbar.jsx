@@ -6,29 +6,33 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import { Search } from 'lucide-react';
+import { Ellipsis, LucideClockFading, Search } from 'lucide-react';
 import { findUrlApi } from "../app/actions/findUrlApi";
 import toast from 'react-hot-toast';
 
 const Navbar = () => {
   const [query, setQuery] = useState('');
+  const [fetching, setFetching] = useState(false);
 
   const handleSearch = async () => {
+    setFetching(true);   
     if (!query.trim()) return;
-
+    
     try {
       const data = await findUrlApi(query);
       if (data.success) {
-        toast.success(`Your custom Short link found: ${data.data.shortUrl}`);
+        toast.success(`short-link found: ${data.data.shortUrl}`);
         setQuery(''); 
       } else {
         toast.error(data.message || 'Short URL not found. Please Create a new one.');
       }
     } catch (error) {
-
+      
       toast.error('Something went wrong while searching');
       console.error(error);
-    }
+    }finally{
+      setFetching(false);
+    }   
   };
 
   return (
@@ -48,13 +52,17 @@ const Navbar = () => {
           onChange={(e) => setQuery(e.target.value)}
           className="text-black px-4 py-2 pl-10 rounded-md border-0 focus:ring-2 focus:ring-purple-500 focus:outline-none"
         />
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-        <button
+        {fetching? (
+          <Ellipsis className='absolute right-1 top-1/2 -translate-y-1/2 bg-transparent text-black   pr-2 py-1 text-sm rounded-full'/>
+        ):
+        (
+          <button
           onClick={handleSearch}
           className="absolute right-1 top-1/2 -translate-y-1/2 bg-transparent text-black   pr-2 py-1 text-sm rounded-full "
         >
           <Search className=' ' height={20} width={20}/>
         </button>
+        )}
       </div>
 
       {/* Links Section */}
