@@ -3,11 +3,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import { Ellipsis, LucideClockFading, Search } from 'lucide-react';
-import { findUrlApi } from "../app/actions/findUrlApi";
+import { Ellipsis, Search } from 'lucide-react';
+import { findUrlApi } from '../app/actions/findUrlApi';
 import toast from 'react-hot-toast';
 
 const Navbar = () => {
@@ -15,69 +14,69 @@ const Navbar = () => {
   const [fetching, setFetching] = useState(false);
 
   const handleSearch = async () => {
-    setFetching(true);   
     if (!query.trim()) return;
-    
+    setFetching(true);
+
     try {
       const data = await findUrlApi(query);
       if (data.success) {
-        toast.success(`short-link found: ${data.data.shortUrl}`);
-        setQuery(''); 
+        toast.success(`Short link found: ${data.data.shortUrl}`);
+        setQuery('');
       } else {
-        toast.error(data.message || 'Short URL not found. Please Create a new one.');
+        toast.error(data.message || 'Short URL not found.');
       }
     } catch (error) {
-      
-      toast.error('Something went wrong while searching');
+      toast.error('Search failed. Please try again.');
       console.error(error);
-    }finally{
+    } finally {
       setFetching(false);
-    }   
+    }
   };
 
   return (
-    <nav className='h-20 bg-purple-900 px-6 flex items-center justify-between text-white shadow-md'>
-      {/* Logo Section */}
-      <Link href="/" className='flex items-center gap-2 text-2xl font-bold'>
-        <Image src='/logo.png' alt="logo" width={36} height={36} className='rounded-full' />
-        <span>BitLinks</span>
-      </Link>
+    <nav className="w-full bg-purple-900 text-white shadow-md">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 px-4 py-3 max-w-7xl mx-auto">
 
-      {/* Search Bar Section */}
-      <div className='relative w-full max-w-md flex items-center bg-white rounded-md shadow-sm'>
-        <Input
-          type="text"
-          placeholder="Type your URL to search custom short link"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="text-black px-4 py-2 pl-10 rounded-md border-0 focus:ring-2 focus:ring-purple-500 focus:outline-none"
-        />
-        {fetching? (
-          <Ellipsis className='absolute right-1 top-1/2 -translate-y-1/2 bg-transparent text-black   pr-2 py-1 text-sm rounded-full'/>
-        ):
-        (
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2 text-2xl font-bold">
+          <Image src="/logo.png" alt="BitLinks Logo" width={36} height={36} className="rounded-full" />
+          <span>BitLinks</span>
+        </Link>
+
+        {/* Search Bar */}
+        <div className="relative w-full max-w-sm">
+          <Input
+            type="text"
+            placeholder="Search your short link"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="w-full pl-10 pr-10 py-2 text-black bg-white placeholder:text-gray-500 rounded-md focus:ring-2 focus:ring-purple-400"
+          />
+          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+            <Search size={18} />
+          </div>
           <button
-          onClick={handleSearch}
-          className="absolute right-1 top-1/2 -translate-y-1/2 bg-transparent text-black   pr-2 py-1 text-sm rounded-full "
-        >
-          <Search className=' ' height={20} width={20}/>
-        </button>
-        )}
-      </div>
+            disabled={fetching || !query.trim()}
+            onClick={handleSearch}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-800 hover:text-purple-700 transition disabled:opacity-50"
+            aria-label="Search"
+          >
+            {fetching ? <Ellipsis className="animate-pulse" size={20} /> : <Search size={20} />}
+          </button>
+        </div>
 
-      {/* Links Section */}
-      <ul className='flex items-center gap-5 text-base font-medium'>
-        <li>
-          <Link href="/about" className='hover:text-purple-300 transition'>About Us</Link>
-        </li>
-        <li>
+        {/* Links */}
+        <div className="flex gap-4 items-center">
+          <Link href="/about" className="text-base hover:text-purple-300 transition">
+            About Us
+          </Link>
           <Link href="/shorten">
-            <Button className='bg-purple-600 hover:bg-purple-700 shadow-sm text-white'>
+            <Button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md shadow">
               Try Now
             </Button>
           </Link>
-        </li>
-      </ul>
+        </div>
+      </div>
     </nav>
   );
 };

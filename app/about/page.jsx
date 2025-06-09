@@ -4,7 +4,6 @@ import React from 'react';
 export default function About() {
   return (
     <>
-      <Navbar />
       <div className="min-h-screen bg-white text-gray-800 px-6 md:px-20 py-16">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-6 text-blue-600">
